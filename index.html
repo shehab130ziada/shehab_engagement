@@ -676,6 +676,20 @@ body.ar .hero-names,body.ar .hero-date{font-family:var(--font-arabic);}
 </head>
 <body>
 
+<!-- ENVELOPE INTRO -->
+<div id="envelopeGate" style="position:fixed;inset:0;z-index:99999;background:#1C1916;display:flex;align-items:center;justify-content:center;">
+  <div id="envelope" onclick="openEnvelope()" style="cursor:pointer;width:min(280px,70vw);aspect-ratio:3/2;position:relative;">
+    <svg viewBox="0 0 280 187" style="width:100%;height:100%;filter:drop-shadow(0 10px 30px rgba(0,0,0,0.4));">
+      <rect x="2" y="2" width="276" height="183" rx="4" fill="#FDFBF7" stroke="#D4A5A0" stroke-width="1.5"/>
+      <path d="M2 6 L140 110 L278 6" fill="none" stroke="#D4A5A0" stroke-width="1.5"/>
+      <circle cx="140" cy="93" r="22" fill="#FDFBF7" stroke="#B8807A" stroke-width="1.5"/>
+      <text x="140" y="100" text-anchor="middle" font-family="Playfair Display, serif" font-size="20" fill="#8C5E59">S&amp;L</text>
+    </svg>
+    <p style="text-align:center;margin-top:14px;font-family:'Montserrat',sans-serif;font-size:0.7rem;letter-spacing:0.25em;text-transform:uppercase;color:#D4A5A0;">Tap to Open</p>
+  </div>
+</div>
+
+
 <!-- Lang Toggle -->
 <div class="lang-toggle" id="langToggle">
   <button class="lang-btn active" data-lang="en" onclick="setLang('en')">EN</button>
@@ -1154,8 +1168,22 @@ function toggleMusic() {
 }
 
 // Auto-play on first interaction
+function openEnvelope() {
+  bgMusic.play().then(()=>{ musicPlaying=true; document.getElementById('musicBtn').classList.add('playing'); }).catch(()=>{});
+  const env = document.getElementById('envelope');
+  env.style.transition = 'transform 0.5s ease, opacity 0.5s ease';
+  env.style.transform = 'scale(1.15)';
+  env.style.opacity = '0';
+  setTimeout(()=>{
+    const gate = document.getElementById('envelopeGate');
+    gate.style.transition = 'opacity 0.6s ease';
+    gate.style.opacity = '0';
+    setTimeout(()=>{ gate.style.display='none'; }, 600);
+  }, 350);
+}
+
+// music now starts only via envelope click (see openEnvelope)
 document.addEventListener('click', function autoPlay() {
-  if(!musicPlaying) { bgMusic.play().then(()=>{ musicPlaying=true; document.getElementById('musicBtn').classList.add('playing'); }).catch(()=>{}); }
   document.removeEventListener('click', autoPlay);
 }, {once:true});
 
